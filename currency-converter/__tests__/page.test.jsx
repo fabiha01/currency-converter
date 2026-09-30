@@ -1,13 +1,18 @@
-import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
-import Page from '@/app/page'
- 
-describe('Page', () => {
-  it('renders a heading', () => {
-    render(<Page />)
- 
-    const heading = screen.getByRole('heading', { level: 1 })
- 
-    expect(heading).toBeInTheDocument()
-  })
-})
+import { render, screen } from '@testing-library/react';
+import Home from '@/app/page';
+
+jest.mock('@/components/CurrencyConverter', () => ({
+    CurrencyConverter: () => (
+        <div>Currency Converter Component</div>
+    ),
+}));
+
+describe('Home page', () => {
+    it('renders the currency converter', () => {
+        render(<Home />);
+
+        expect(
+            screen.getByText('Currency Converter Component')
+        ).toBeInTheDocument();
+    });
+});
