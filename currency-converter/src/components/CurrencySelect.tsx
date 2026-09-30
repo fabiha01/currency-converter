@@ -7,6 +7,14 @@ interface CurrencySelectProps {
     onChange: (currency: string) => void;
 }
 
+/**
+ * Renders a select field containing the available currencies.
+ *
+ * @param label - Label displayed alongside the select field.
+ * @param value - Currently selected currency code.
+ * @param currencies - List of currencies available for selection.
+ * @param onChange - Callback invoked when the selected currency changes.
+ */
 export function CurrencySelect({label, value, currencies, onChange} : CurrencySelectProps) {
     return (
         <label>

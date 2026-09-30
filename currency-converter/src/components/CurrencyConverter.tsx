@@ -8,6 +8,12 @@ import { Currency } from "@/types/currency";
 import { CurrencyAmountInput } from "./CurrencyAmountInput";
 import { CurrencySelect } from "./CurrencySelect";
 
+/**
+ * Main currency converter component.
+ *
+ * Manages the selected currencies, conversion amount, API requests,
+ * loading states, errors, and conversion results.
+ */
 export function CurrencyConverter() {
     // State are the variables that can change
     const [amount, setAmount] = useState<number>(0); // The amount the user wants to convert
@@ -16,7 +22,7 @@ export function CurrencyConverter() {
     const [conversionResult, setConversionResult] = useState<ConversionData | null>(null); // The result of the conversion
     const [isLoadingCurrencies, setIsLoadingCurrencies] = useState<boolean>(false);
     const [isConverting, setIsConverting] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null); // Stores error message to display to the user
     
 
     // state to hold the list of currencies
@@ -42,7 +48,7 @@ export function CurrencyConverter() {
     }, []);
 
     // Function to handle the conversion when the user clicks the button
-    async function handleConvert() {;
+    async function handleConvert() {
         setIsConverting(true);
         setError(null);
 

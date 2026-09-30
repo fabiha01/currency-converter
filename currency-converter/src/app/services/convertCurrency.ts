@@ -4,6 +4,15 @@ import { ConversionData } from '@/types/conversionData';
 
 const apiKey = process.env.CURRENCY_API_KEY; // Get the API key from environment variables
 
+/**
+ * Converts an amount from one currency to another using CurrencyBeacon.
+ *
+ * @param amount - The amount to convert. Must be greater than zero.
+ * @param fromCurrency - The three-letter currency code to convert from.
+ * @param toCurrency - The three-letter currency code to convert to.
+ * @returns The original amount, currencies, converted amount, and conversion rate.
+ * @throws An error when the amount is invalid or the currency API request fails.
+ */
 export async function convertCurrency(amount: number, fromCurrency: string, toCurrency: string): Promise<ConversionData> {
 
     // Fetch the conversion rate from the API

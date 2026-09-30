@@ -1,9 +1,15 @@
-// Use the Next.js way of creating an endpoint
-// When a user views this route, the code runs
-
 import { NextResponse } from "next/server";
 import {convertCurrency} from "@/app/services/convertCurrency";
 
+/**
+ * Handles GET requests to the currency conversion API endpoint.
+ *
+ * Reads the amount and currency codes from the request query parameters,
+ * validates them, and delegates the conversion to the currency service.
+ *
+ * @param request - The incoming HTTP request.
+ * @returns A JSON response containing the conversion data or an error.
+ */
 export async function GET(request: Request) {
     try {
 
@@ -18,7 +24,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Missing or invalid query parameters" }, { status: 400 });
         }
 
-        // Call the convertCurrency function to perform the conversion
+        // Use the convertCurrency service to perform the conversion
         const conversionData = await convertCurrency(amount, fromCurrency, toCurrency);
 
         // Return the conversion data as JSON

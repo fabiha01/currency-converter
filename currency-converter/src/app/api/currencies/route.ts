@@ -8,6 +8,15 @@ import { CurrencyApiResponse } from "@/types/currencyApiResponse";
 // Use the API key from the environment variables
 const apiKey = process.env.CURRENCY_API_KEY;
 
+/**
+ * Handles GET requests for the application's currency list.
+ *
+ * Fetches currencies from the external CurrencyBeacon API, transforms
+ * the response into the application's Currency format, and returns
+ * the cleaned data to the client.
+ *
+ * @returns A JSON response containing the available currencies or an error.
+ */
 export async function GET() {
 
     try {
@@ -24,10 +33,10 @@ export async function GET() {
             throw new Error(`Currency API error: ${response.status}`);
         }
 
+        // Use CurrencyApiResponse type to make data predictable
         const data: CurrencyApiResponse = await response.json();
 
-        console.log('data from currency route', data);
-
+        // Transform response to a format the app understands
         const cleanedCurrencies: Currency[] = data.response.map((item) => ({
             id: item.id,
             name: item.name,
