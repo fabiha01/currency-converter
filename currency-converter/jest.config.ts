@@ -14,8 +14,7 @@ const config: Config = {
     setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
     moduleNameMapper: {
         // Handle module aliases based on tsconfig.paths
-        '^@/components/(.*)$': '<rootDir>/components/$1',
-        '^@/app/(.*)$': '<rootDir>/app/$1',
+        '^@/(.*)$': '<rootDir>/src/$1',
     },
     testPathIgnorePatterns: ['/node_modules/', '/.next/'],
 };
