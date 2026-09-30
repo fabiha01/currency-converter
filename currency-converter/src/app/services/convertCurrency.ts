@@ -1,6 +1,6 @@
 // Takes in amount, the 2 currencies and returns converted amount
 
-import { ConversionData } from '../types/currency';
+import { ConversionData } from '@/types/conversionData';
 
 const apiKey = process.env.CURRENCY_API_KEY; // Get the API key from environment variables
 
