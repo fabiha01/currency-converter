@@ -1,9 +1,12 @@
 "use client"; // This code will run in the browser
 
 import { useEffect, useState } from "react";
-import { ConversionData } from "@/app/types/currency";
+import { ConversionData } from "@/types/conversionData";
 import { fetchCurrencies } from "@/app/services/fetchCurrencies";
-import { CurrencyItem } from "@/app/types/currencyItem";
+import { Currency } from "@/types/currency";
+
+import { CurrencyAmountInput } from "./CurrencyAmountInput";
+import { CurrencySelect } from "./CurrencySelect";
 
 export function CurrencyConverter() {
     // State are the variables that can change
@@ -13,17 +16,20 @@ export function CurrencyConverter() {
     const [conversionResult, setConversionResult] = useState<ConversionData | null>(null); // The result of the conversion
     const [isLoadingCurrencies, setIsLoadingCurrencies] = useState<boolean>(false);
     const [isConverting, setIsConverting] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+    
 
     // state to hold the list of currencies
-    const [currencies, setCurrencies] = useState<CurrencyItem[]>([]);
+    const [currencies, setCurrencies] = useState<Currency[]>([]);
 
     // Fetch currencies when the component mounts
     useEffect(() => {
         async function loadCurrencies() {
+            setIsLoadingCurrencies(true);
             try {
                 const fetchedCurrencies = await fetchCurrencies();
                 // Make sure it is an array before setting state
-                setCurrencies(Array.isArray(fetchedCurrencies) ? fetchedCurrencies : []);
+                setCurrencies(fetchedCurrencies);
             } catch (error) {
                 console.error("Error fetching currencies:", error);
             }
@@ -36,8 +42,9 @@ export function CurrencyConverter() {
     }, []);
 
     // Function to handle the conversion when the user clicks the button
-    async function handleConvert() {
+    async function handleConvert() {;
         setIsConverting(true);
+        setError(null);
 
         try {
             // call our api route
@@ -49,11 +56,17 @@ export function CurrencyConverter() {
                 throw new Error(data.error);
             }
 
+            if(!amount || amount <= 0) {
+                setError('Please enter an amount greater than zero');
+                return;
+            }
+
             setConversionResult(data);
 
         } catch(error) {
             console.error('Error converting currency', error);
             setConversionResult(null);
+            setError(error instanceof Error ? error.message: 'Unable to convert currency');
         } finally {
             setIsConverting(false);
         }
@@ -63,45 +76,27 @@ export function CurrencyConverter() {
         <div className="currency-converter">
             <h1>Currency Converter</h1>
             <div className="converter-form">
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(parseFloat(e.target.value))}
-                    placeholder="EnterAmount"
-                />
-                <select value={fromCurrency} onChange={(e) => setFromCurrency(e.target.value)}>
-                    {currencies.map((currency) => (
-                        <option key={currency.id} value={currency.short_code}>
-                            {currency.short_code} - {currency.name}
-                        </option>
-                    ))}
-                </select>
-                <select value={toCurrency} onChange={(e) => setToCurrency(e.target.value)}>
-                    {currencies.map((currency) => (
-                        <option key={currency.id} value={currency.short_code}>
-                            {currency.short_code} - {currency.name}
-                        </option>
-                    ))}
-                </select>
-                <button onClick={handleConvert} disabled={isConverting}>
+                <CurrencyAmountInput amount={amount} setAmount={setAmount} />
+                <CurrencySelect label={"Convert From:"} value={fromCurrency} currencies={currencies} onChange={setFromCurrency} />
+                <CurrencySelect label={"Convert To:"} value={toCurrency} currencies={currencies} onChange={setToCurrency} />
+                <button onClick={(e) => {
+                    e.preventDefault();
+                    handleConvert();
+                    }
+                } 
+                    disabled={isConverting}>
                     {isConverting ? "Converting..." : "Convert"}
                 </button>
+
+                {error && (
+                    <p role="alert">
+                        {error}
+                    </p>
+                )}
             </div>
 
             {conversionResult && (
                 <div className="conversion-result">
-                    <p>
-                        Amount: {conversionResult.amount}
-                    </p>
-
-                    <p>
-                        From: {conversionResult.fromCurrency}
-                    </p>
-
-                    <p>
-                        To: {conversionResult.toCurrency}
-                    </p>
-
                     <p>
                         Converted amount: {conversionResult.convertedAmount.toFixed(2)}
                     </p>
